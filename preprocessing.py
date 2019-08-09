@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utils import clean_review
+from utils import clean_review, character_to_ascii
 
 # Constants
 SEQ_LENGTH = 40
@@ -43,6 +43,9 @@ for index, review in enumerate(data):
     for i in range(len(review) - SEQ_LENGTH):
         seq = review[i:SEQ_LENGTH + i]
         nxt = review[SEQ_LENGTH + i]
+        
+        seq = character_to_ascii(seq)
+        nxt = character_to_ascii(nxt)[0]
         
         review_sequence.append(seq)
         review_next.append(nxt)
