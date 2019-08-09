@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from utils import clean_review, character_to_ascii
 
@@ -24,12 +25,11 @@ data = data[['review_body']]
 data = data.dropna()
 
 # As I have limited RAM(8GB), I'll only work with 
-data = data.sample(frac=0.2)
+data = data.sample(frac=0.03)
 
 data = data.values
 
 review_sequence = []
-review_next = []
 
 for index, review in enumerate(data):
     if index % 1000 == 0:
@@ -40,13 +40,39 @@ for index, review in enumerate(data):
     # Cleaning the reviews
     review = clean_review(review)
     
+    # Generating sequence
     for i in range(len(review) - SEQ_LENGTH):
+        # Selecting the sequence
         seq = review[i:SEQ_LENGTH + i]
         nxt = review[SEQ_LENGTH + i]
         
+        # Converting to ascii
         seq = character_to_ascii(seq)
         nxt = character_to_ascii(nxt)[0]
         
+        seq.append(nxt)
+        
+        # Appending the data
         review_sequence.append(seq)
-        review_next.append(nxt)
-    
+
+del data
+
+# Converting the array into numpy array
+dataset = np.array([review_sequence])
+
+del review_sequence
+
+# Reshaping the data
+dataset = dataset.reshape(dataset.shape[1], SEQ_LENGTH + 1)
+
+# Saving the numpy array
+np.save('dataset/sequence', dataset)
+
+
+
+
+
+
+
+
+
