@@ -1,5 +1,7 @@
 import pandas as pd
 
+from utils import clean_review
+
 # Constants
 SEQ_LENGTH = 40
 
@@ -24,3 +26,24 @@ data = data.dropna()
 # As I have limited RAM(8GB), I'll only work with 
 data = data.sample(frac=0.2)
 
+data = data.values
+
+review_sequence = []
+review_next = []
+
+for index, review in enumerate(data):
+    if index % 1000 == 0:
+        print('--Processing {}th review'.format(index))
+    
+    review = review[0]
+    
+    # Cleaning the reviews
+    review = clean_review(review)
+    
+    for i in range(len(review) - SEQ_LENGTH):
+        seq = review[i:SEQ_LENGTH + i]
+        nxt = review[SEQ_LENGTH + i]
+        
+        review_sequence.append(seq)
+        review_next.append(nxt)
+    
