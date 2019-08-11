@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from utils import clean_review, character_to_ascii
+from utils import clean_review, character_to_number
 
 # Constants
 SEQ_LENGTH = 40
@@ -47,8 +47,8 @@ for index, review in enumerate(data):
         nxt = review[SEQ_LENGTH + i]
         
         # Converting to ascii
-        seq = character_to_ascii(seq)
-        nxt = character_to_ascii(nxt)[0]
+        seq = character_to_number(seq)
+        nxt = character_to_number(nxt)[0]
         
         seq.append(nxt)
         
@@ -67,6 +67,3 @@ dataset = dataset.reshape(dataset.shape[1], SEQ_LENGTH + 1)
 
 # Saving the numpy array
 np.save('dataset/sequence', dataset)
-
-# Saving the classes
-np.save('dataset/classes', np.unique(dataset[:, SEQ_LENGTH]))

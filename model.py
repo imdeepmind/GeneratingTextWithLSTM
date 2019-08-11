@@ -6,23 +6,24 @@ from keras.layers import Dense, LSTM, CuDNNLSTM
 from keras import optimizers
 from keras.layers.embeddings import Embedding
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+from utils import CHARS
 
 # Loading the data
 data = np.load('dataset/sequence.npy')
 
 # For testing, im using a fraction of the data
-data = data[0: 100000]
+data = data[0: 1000000]
 
 # Some constants
 GPU = False
 SEQ_LENGTH = 40
-VOCAB_SIZE = 128
+VOCAB_SIZE = len(CHARS) + 1
 EPOCHS = 50
 BATCH_SIZE = 1024
 
 # Dividing the dataset
-X = data[:, 0: 40]
-y = pd.get_dummies(data[:, 40]).values
+X = data[:, 0: SEQ_LENGTH]
+y = pd.get_dummies(data[:, SEQ_LENGTH]).values
 
 del data
 

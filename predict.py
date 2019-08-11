@@ -1,6 +1,6 @@
 from keras.models import load_model
 from keras import optimizers
-from utils import clean_review, character_to_ascii, ascii_to_character
+from utils import clean_review, character_to_number, number_to_character
 import numpy as np
 
 SEQ_LENGTH = 40
@@ -23,7 +23,7 @@ start = start[0:SEQ_LENGTH]
 
 print('You typed: ' + start)
 
-start = character_to_ascii(start)
+start = character_to_number(start)
 
 review = start
 
@@ -33,4 +33,4 @@ for i in range(PREDICT_CHRS):
     review = np.hstack([review, classes[temp]])
     start = np.delete(start, 0,0)
     
-print('Generated Review: ' + ascii_to_character(review))
+print('Generated Review: ' + number_to_character(review))
