@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 def character_to_ascii(text):
     return [ord(c) for c in text]
 
+def ascii_to_character(text):
+    return ''.join([chr(c) for c in text])
+
 def clean_review(review):
     # Changing to lowercase
     review = review.lower()

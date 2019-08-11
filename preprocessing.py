@@ -68,11 +68,5 @@ dataset = dataset.reshape(dataset.shape[1], SEQ_LENGTH + 1)
 # Saving the numpy array
 np.save('dataset/sequence', dataset)
 
-
-
-
-
-
-
-
-
+# Saving the classes
+np.save('dataset/classes', np.unique(dataset[:, SEQ_LENGTH]))
