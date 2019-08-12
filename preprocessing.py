@@ -25,7 +25,7 @@ data = data[['review_body']]
 data = data.dropna()
 
 # As I have limited RAM(8GB), I'll only work with 
-data = data.sample(frac=0.03)
+data = data.sample(frac=0.05)
 
 data = data.values
 
