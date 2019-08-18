@@ -12,7 +12,7 @@ from utils import CHARS
 data = np.load('dataset/sequence.npy')
 
 # For testing, im using a fraction of the data
-data = data[0: 1000000]
+# data = data[0: 1000000]
 
 # Some constants
 GPU = False
@@ -34,7 +34,7 @@ del X, y
 
 # Making the suquentual model
 model = Sequential()
-model.add(Embedding(VOCAB_SIZE, 128, input_length=SEQ_LENGTH))
+model.add(Embedding(VOCAB_SIZE, 32, input_length=SEQ_LENGTH))
 
 if GPU:
   model.add(CuDNNLSTM(128))
