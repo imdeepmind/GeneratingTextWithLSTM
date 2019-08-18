@@ -32,9 +32,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_
 
 del X, y
 
-# Making the suquentual model
+# Making the sequential model
 model = Sequential()
-model.add(Embedding(VOCAB_SIZE, 128, input_length=SEQ_LENGTH))
+model.add(Embedding(VOCAB_SIZE, 32, input_length=SEQ_LENGTH))
 
 if GPU:
   model.add(CuDNNLSTM(128))
@@ -47,10 +47,10 @@ model.add(Dense(y_train.shape[1], activation='softmax'))
 # Compiling the model
 model.compile(loss='categorical_crossentropy', optimizer=optimizers.RMSprop(lr=0.01), metrics=['accuracy'])
 
-# Printing the model summmary
+# Printing the model summary
 print(model.summary())
 
-# Added early stopping system to monnitor validation loss on each epoch and stops training when validation loss start to increase
+# Added early stopping system to monitor validation loss on each epoch and stops training when validation loss start to increase
 monitor = EarlyStopping(monitor='val_loss', 
                         patience=5, 
                         mode='min',
