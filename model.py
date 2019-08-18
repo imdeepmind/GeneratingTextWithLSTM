@@ -12,7 +12,7 @@ from utils import CHARS
 data = np.load('dataset/sequence.npy')
 
 # For testing, im using a fraction of the data
-data = data[0: 1000000]
+#data = data[0: 1000000]
 
 # Some constants
 GPU = False

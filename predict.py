@@ -1,6 +1,6 @@
 from keras.models import load_model
 from keras import optimizers
-from utils import clean_review, character_to_number, number_to_character, get_character_from_index
+from utils import clean_review, character_to_number, number_to_character
 import numpy as np
 
 SEQ_LENGTH = 40
@@ -28,8 +28,10 @@ review = start
 
 for i in range(PREDICT_CHRS):
     temp = model.predict_classes(np.array([start]))[0]
-    start = np.hstack([start, temp])
-    review = np.hstack([review, temp])
+    print(temp)
+    
+    start = np.hstack([start, temp+1])
+    review = np.hstack([review, temp+1])
     start = np.delete(start, 0,0)
     
 print('Generated Review: ' + number_to_character(review))
