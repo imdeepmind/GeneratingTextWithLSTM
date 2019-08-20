@@ -5,7 +5,7 @@ from keras.preprocessing.text import Tokenizer
 from constants import NO_CHARS
 from utils import clean_review
 
-tokenizer = Tokenizer(num_words=NO_CHARS)
+tokenizer = Tokenizer(num_words=NO_CHARS, filters='')
 
 data = pd.read_csv('dataset/02.tsv', sep='\t', error_bad_lines=False)
 
