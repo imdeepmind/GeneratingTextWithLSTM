@@ -35,8 +35,8 @@ data = data.dropna()
 # Shuffling the data
 data = data.sample(frac=1)
 
-# Selecting first 20000 samples
-data = data.head(20000)
+# Selecting first 6000 samples
+data = data.head(BATCH_SIZE * 2)
 
 print('--After cleaning, there are total {} data samples in the dataset--'.format(len(data)))
 
@@ -90,6 +90,8 @@ for i in range(ceil(len(data) / BATCH_SIZE)):
 
     sequence_arr = np.array(review_seq)
     next_arr = np.array(nxt_seq)
+    
+    print('--Generated {}sequences--'.format(len(sequence_arr)))
     
     # Saving the dataset
     np.save('dataset/sequence_review_{}'.format(i), sequence_arr)
