@@ -1,3 +1,3 @@
-BATCH_SIZE = 5
-NO_BATCHES = 1
-NO_CHARS = 100
+BATCH_SIZE = 6000 # Reduce it if less RAM is available
+NO_CHARS = 50
+SEQ_LENGTH = 40
