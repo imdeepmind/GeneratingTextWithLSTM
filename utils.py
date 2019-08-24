@@ -1,30 +1,12 @@
 import re
 from bs4 import BeautifulSoup
 
-CHARS = {'a':1,'b':2,'c':3,'d':4,'e':5,'f':6,'g':7,'h':8,'i': 9,'j':10,'k':11,'l':12,'m':13,
-         'n':14,'o':15,'p':16,'q':17,'r':18,'s':19,'t':20,'u':21,'v':22,'w':23,'x':24,'y':25,
-         'z':26,' ': 27, '--':28}
-
-def get_character_index(ch):
-    if ch in CHARS.keys():
-        return CHARS[ch]
-    else:
-        return CHARS['--']
-def get_character_from_index(indx):
-    for key, ind in CHARS.items():
-        if ind == indx:
-            return key
-    return '--'
-
-def character_to_number(text):
-    return [get_character_index(c) for c in text]
-
-def number_to_character(text):
-    return ''.join([get_character_from_index(c) for c in text])
+def deEmojify(inputString):
+    return inputString.encode('ascii', 'ignore').decode('ascii')
 
 def clean_review(review):
     # Changing to lowercase
-    review = review.lower()
+    review = deEmojify(review.lower())
     
     # Changing he'll to he will
     review = re.sub(r"i'm", "i am", review)

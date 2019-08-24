@@ -1,95 +1,98 @@
+# Importing dependencies
+import pickle
 import pandas as pd
 import numpy as np
 from math import ceil
-from imblearn.under_sampling import RandomUnderSampler
+from keras.utils import np_utils
 
-from utils import clean_review, character_to_number, CHARS
+# Importing some constants
+from constants import BATCH_SIZE, SEQ_LENGTH, NO_CHARS
 
-# Constants
-SEQ_LENGTH = 40
-BATCH_SIZE = 10000
+# Importing utility method
+from utils import clean_review
 
-randomSampler = RandomUnderSampler(random_state=1969)
+# Reading the Tokenizer pickle file
+with open(r"dataset/tokenizer.pickle", "rb") as input_file:
+    tokenizer = pickle.load(input_file)
 
-# Reading data
+# Reading the dataset
 data = pd.read_csv('dataset/02.tsv', sep='\t', error_bad_lines=False)
 
-# Filtering data
-data = data[data['verified_purchase'] == 'Y']
+print('--There are total {} data samples in the dataset--'.format(len(data)))
 
-# Converting data type of columns review_body
-data = data.astype({'review_body' : 'str'})
+# Filtering it
+data = data[data['verified_purchase'] == 'Y']
 
 # Selecting reviews with review length > SEQ_LENGTH
 data = data[data['review_body'].str.len() > SEQ_LENGTH]
-        
-# Selecting the two columns
+
+# Selecting review_body column
 data = data[['review_body']]
 
-# Dropping rows with nan values
+# Dropping empty rows
 data = data.dropna()
 
-for k in range(ceil(len(data) / BATCH_SIZE)):
-    print(k * BATCH_SIZE, k * BATCH_SIZE + BATCH_SIZE)
-    
-    batch_data = data.iloc[k * BATCH_SIZE: k * BATCH_SIZE + BATCH_SIZE]
-    
-    batch_data = batch_data.values
+# Shuffling the data
+data = data.sample(frac=1)
 
-    review_df = pd.DataFrame(columns=['sequence', 'next'])
-    review_sequence = []
-    next_sequence = []
+# Selecting first 6000 samples
+data = data.head(BATCH_SIZE * 2)
+
+print('--After cleaning, there are total {} data samples in the dataset--'.format(len(data)))
+
+# Spliting the data into batches
+for i in range(ceil(len(data) / BATCH_SIZE)):
+    # Selecting a part of the data
+    batch = data.iloc[i * BATCH_SIZE: (i*BATCH_SIZE) + BATCH_SIZE].values
     
-    for index, review in enumerate(batch_data):
-        if index% 1000 == 0:
-            print('--Processing batch {} {}th review'.format(k+1,index))
-        
-        review = review[0]
+    review_seq = []
+    nxt_seq = []
+    
+    # Iterating through the reviews
+    for index, review in enumerate(batch):
+        if index % 1000 == 0:
+            print('--Preprocessing batch {} review {}--'.format(i+1, index+1))
         
         # Cleaning the reviews
-        review = clean_review(review)
+        review = clean_review(review[0])
         
-        # Generating sequence
-        for i in range(len(review) - SEQ_LENGTH):
-            # Selecting the sequence
-            seq = review[i:SEQ_LENGTH + i]
-            nxt = review[SEQ_LENGTH + i]
+        # Generating the sequences
+        for k in range(len(review) - SEQ_LENGTH):
+            # Seleting the sequence
+            seq = review[k:SEQ_LENGTH + k]
+            nxt = review[SEQ_LENGTH + k]
             
-            # Converting to ascii
-            seq = character_to_number(seq)
-            nxt = character_to_number(nxt)[0]
+            # Using tokenizer to convert the review into vector
+            seq = tokenizer.texts_to_sequences(seq)
+            nxt = tokenizer.texts_to_sequences(nxt)
             
-            # Appending the data
-            review_sequence.append(seq)
-            next_sequence.append(nxt)
+            seq_vec = []
+            nxt_vec = []
+            
+            for char in seq:
+                if len(char) == 1:
+                    seq_vec.append(char[0])
+                else:
+                    seq_vec.append(0)
+                    
+            for char in nxt:
+                if len(char) == 1:
+                    nxt_vec.append(char[0])
+                else:
+                    nxt_vec.append(0)       
+            
+            # Using One Hot 
+            seq_one_hot = np_utils.to_categorical(seq_vec, NO_CHARS + 1)
+            nxt_one_hot = np_utils.to_categorical(nxt_vec, NO_CHARS + 1)
+            
+            review_seq.append(seq_one_hot)
+            nxt_seq.append(nxt_one_hot[0])
+
+    sequence_arr = np.array(review_seq)
+    next_arr = np.array(nxt_seq)
     
-    review_df['sequence'] = review_sequence
-    review_df['next'] = next_sequence
+    print('--Generated {}sequences--'.format(len(sequence_arr)))
     
-    del review_sequence, next_sequence
-    
-    review_df = review_df[review_df['next'] != CHARS['--']]
-    
-    review_df = review_df.sample(frac=1)
-    
-    X, y = randomSampler.fit_resample(review_df['sequence'].values.reshape(-1,1),review_df['next'].values.reshape(-1,1))
-    
-    del review_df
-    
-    final_data = []
-    
-    for i in range(len(X)):
-        temp = X[i][0]
-        temp.append(y[i][0])
-        final_data.append(temp)
-    
-    # Converting the array into numpy array
-    dataset = np.array([final_data])
-    
-    del final_data
-    
-    # Reshaping the data
-    dataset = dataset.reshape(dataset.shape[1], SEQ_LENGTH + 1)
-    
-    # Saving the numpy array
-    np.save('dataset/sequence_{}'.format(k), dataset)
+    # Saving the dataset
+    np.save('dataset/sequence_review_{}'.format(i), sequence_arr)
+    np.save('dataset/next_review_{}'.format(i), next_arr)
