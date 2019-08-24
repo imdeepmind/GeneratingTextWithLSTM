@@ -1,2 +1,3 @@
 DATABASE="dataset/sequence.db"
 BATCH_SIZE=10
+MAX_LENGTH=40
