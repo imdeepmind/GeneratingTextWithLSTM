@@ -2,3 +2,4 @@ DATABASE="dataset/sequence.db"
 BATCH_SIZE=10
 MAX_LENGTH=40
 NO_ROWS=200000000
+GPU=False

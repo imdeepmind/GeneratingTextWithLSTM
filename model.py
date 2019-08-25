@@ -1,16 +1,19 @@
 from keras.models import Sequential
-from keras.layers import Dense, LSTM
+from keras.layers import Dense, LSTM, CuDNNLSTM
 from keras import optimizers
 
 from generator import DataGenerator
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS, GPU
 
 dataGenerator = DataGenerator(DATABASE, BATCH_SIZE, MAX_LENGTH)
 generator = dataGenerator.generator()
 
 model = Sequential()
 
-model.add(LSTM(128, input_shape=(MAX_LENGTH, 128)))
+if GPU:
+    model.add(CuDNNLSTM(128, input_shape=(MAX_LENGTH, 128)))
+else:
+    model.add(LSTM(128, input_shape=(MAX_LENGTH, 128)))
 model.add(Dense(128, activation='softmax'))
 
 optimizer = optimizers.RMSprop(lr=0.01)
