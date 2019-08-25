@@ -49,13 +49,14 @@ class DataGenerator:
                     List of next characters
         """
         
+        
         # Initializng numpy arrays
         x = np.zeros((self.batch_size, self.maxlen, 128), dtype=np.bool)
         y = np.zeros((self.batch_size, 128), dtype=np.bool)
         
         # Iterating through the seq and nxt
         for i, sentence in enumerate(seq):
-            for t, char in enumerate(seq):
+            for t, char in enumerate(sentence):
                 x[i, t, char] = 1
             y[i, nxt[i]] = 1
             
