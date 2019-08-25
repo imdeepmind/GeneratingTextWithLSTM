@@ -61,6 +61,7 @@ class DataGenerator:
             
         return x, y
     
+    
     def generator(self):
         """
             DataGenerator class generator method generates batches of data 

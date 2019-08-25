@@ -3,7 +3,7 @@ from keras.layers import Dense, LSTM
 from keras import optimizers
 
 from generator import DataGenerator
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS
 
 dataGenerator = DataGenerator(DATABASE, BATCH_SIZE, MAX_LENGTH)
 generator = dataGenerator.generator()
@@ -16,4 +16,4 @@ model.add(Dense(128, activation='softmax'))
 optimizer = optimizers.RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-model.fit_generator(generator, epochs=10, steps_per_epoch=1000)
+model.fit_generator(generator, epochs=10, steps_per_epoch=NO_ROWS // BATCH_SIZE)
