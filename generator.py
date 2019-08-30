@@ -49,7 +49,6 @@ class DataGenerator:
                     List of next characters
         """
         
-        
         # Initializng numpy arrays
         x = np.zeros((self.batch_size, self.maxlen, 128), dtype=np.bool)
         y = np.zeros((self.batch_size, 128), dtype=np.bool)

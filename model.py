@@ -3,10 +3,12 @@ from keras.layers import Dense, LSTM, CuDNNLSTM
 from keras import optimizers
 
 from generator import DataGenerator
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS, GPU
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU
 
 dataGenerator = DataGenerator(DATABASE, BATCH_SIZE, MAX_LENGTH)
-generator = dataGenerator.generator()
+
+trainGenerator = dataGenerator.trainGenerator()
+valGenerator = dataGenerator.validationGenerator()
 
 model = Sequential()
 
@@ -19,4 +21,8 @@ model.add(Dense(128, activation='softmax'))
 optimizer = optimizers.RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-model.fit_generator(generator, epochs=10, steps_per_epoch=NO_ROWS // BATCH_SIZE)
+model.fit_generator(trainGenerator, 
+                    epochs=10, 
+                    steps_per_epoch=NO_ROWS_TRAIN // BATCH_SIZE,
+                    validation_data=valGenerator,
+                    validation_steps=NO_ROWS_VAL // BATCH_SIZE)
