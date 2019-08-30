@@ -8,15 +8,15 @@ class DataGenerator:
     
     batch_size = 32
     maxlen = 40
-    database=''
+    database_path=''
     
-    def __init__(self, database, batch_size=32, maxlen=40):
+    def __init__(self, database_path, batch_size=32, maxlen=40):
         """
             Constructor method for the DataGenerator class
             
             # Arguments
-                database: String
-                    Link of the database
+                database_path: String
+                    Name of the folder that contains all the databases
                 batch_size: Integer
                     Size of each batch, Default size is 32
                 maxlen: Integer
@@ -32,8 +32,8 @@ class DataGenerator:
             self.maxlen = maxlen
         
         # If there is database, then setting it, else thworing an ValueError
-        if database and database != '':
-            self.database = database
+        if database_path and database_path != '':
+            self.database_path = database_path
         else:
             raise ValueError("Please provide an valid database link")
 
@@ -63,17 +63,104 @@ class DataGenerator:
         return x, y
     
     
-    def generator(self):
+    def trainGenerator(self):
         """
-            DataGenerator class generator method generates batches of data 
+            DataGenerator class trainGenerator method generates batches of data 
             
             # Arguments
                 No arguments
         """
+        
         while True:
             # Initializng a SQLite database connection
             # TODO: Need to find a better way to find something
-            connection = sqlite3.connect(self.database)
+            connection = sqlite3.connect(self.database_path + '/sequence_train.db')
+            cursor = connection.cursor()
+            
+            # Counter for tracking the index
+            counter = 0
+            
+            # SQL query
+            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, counter * self.batch_size)
+            
+            # Updateing the counter
+            counter += 1
+            
+            # Executing the sql
+            cursor.execute(sql)
+            
+            # Fetching the data
+            rows = cursor.fetchall()
+            
+            seq_arr = []
+            nxt_arr = []
+            
+            # Converting the charcacters into ASCII numbers
+            for seq, nxt in rows:
+                temp = []
+                for char in seq:
+                    temp.append(ord(char))
+                
+                seq_arr.append(temp)
+                nxt_arr.append(ord(nxt))
+            
+            yield self.ont_hot(seq_arr, nxt_arr)
+        
+    def validationGenerator(self):
+        """
+            DataGenerator class generator method validationGenerates batches of data 
+            
+            # Arguments
+                No arguments
+        """
+        
+        while True:
+            # Initializng a SQLite database connection
+            # TODO: Need to find a better way to find something
+            connection = sqlite3.connect(self.database_path + '/sequence_val.db')
+            cursor = connection.cursor()
+            
+            # Counter for tracking the index
+            counter = 0
+            
+            # SQL query
+            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, counter * self.batch_size)
+            
+            # Updateing the counter
+            counter += 1
+            
+            # Executing the sql
+            cursor.execute(sql)
+            
+            # Fetching the data
+            rows = cursor.fetchall()
+            
+            seq_arr = []
+            nxt_arr = []
+            
+            # Converting the charcacters into ASCII numbers
+            for seq, nxt in rows:
+                temp = []
+                for char in seq:
+                    temp.append(ord(char))
+                
+                seq_arr.append(temp)
+                nxt_arr.append(ord(nxt))
+            
+            yield self.ont_hot(seq_arr, nxt_arr)
+
+    def testGenerator(self):
+        """
+            DataGenerator class testGenerator method generates batches of data 
+            
+            # Arguments
+                No arguments
+        """
+        
+        while True:
+            # Initializng a SQLite database connection
+            # TODO: Need to find a better way to find something
+            connection = sqlite3.connect(self.database_path + '/sequence_test.db')
             cursor = connection.cursor()
             
             # Counter for tracking the index
