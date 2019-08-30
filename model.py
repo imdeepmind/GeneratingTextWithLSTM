@@ -7,9 +7,10 @@ import os
 
 # importing my generator
 from generator import DataGenerator
+from callback import CustomCallback
 
 # Importing constants
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS, DEMO_REVIEW
 
 # Creating weights folder if not exists
 if not os.path.exists(WEIGHT_FOLDER):
@@ -45,7 +46,10 @@ monitor = EarlyStopping(monitor='val_loss',
                         restore_best_weights=True)
 
 # Saving the model in every epochs for some experiments
-checkpoint = ModelCheckpoint(filepath="model.{epoch:02d}-{val_loss:.2f}.h5")
+checkpoint = ModelCheckpoint(filepath=WEIGHT_FOLDER + "/model.{epoch:02d}-{val_loss:.2f}.h5")
+
+# Custom callback for generating samples 
+predictChars = CustomCallback()
 
 # Training the model
 model.fit_generator(trainGenerator, 
@@ -53,4 +57,6 @@ model.fit_generator(trainGenerator,
                     steps_per_epoch=NO_ROWS_TRAIN // BATCH_SIZE,
                     validation_data=valGenerator,
                     validation_steps=NO_ROWS_VAL // BATCH_SIZE,
-                    callbacks=[monitor, checkpoint])
+                    callbacks=[monitor, checkpoint, predictChars])
+
+model.save("{}/model.best.h5".format(WEIGHT_FOLDER))
