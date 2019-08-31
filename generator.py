@@ -9,6 +9,9 @@ class DataGenerator:
     batch_size = 32
     maxlen = 40
     database_path=''
+    counterTrain = 0
+    counterVal = 0
+    counterTest = 0
     
     def __init__(self, database_path, batch_size=32, maxlen=40):
         """
@@ -58,7 +61,7 @@ class DataGenerator:
             for t, char in enumerate(sentence):
                 x[i, t, char] = 1
             y[i, nxt[i]] = 1
-            
+        
         return x, y
     
     
@@ -76,14 +79,11 @@ class DataGenerator:
             connection = sqlite3.connect(self.database_path + '/sequence_train.db')
             cursor = connection.cursor()
             
-            # Counter for tracking the index
-            counter = 0
-            
             # SQL query
-            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, counter * self.batch_size)
+            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, self.counterTrain * self.batch_size)
             
             # Updateing the counter
-            counter += 1
+            self.counterTrain += 1
             
             # Executing the sql
             cursor.execute(sql)
@@ -119,14 +119,11 @@ class DataGenerator:
             connection = sqlite3.connect(self.database_path + '/sequence_val.db')
             cursor = connection.cursor()
             
-            # Counter for tracking the index
-            counter = 0
-            
             # SQL query
-            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, counter * self.batch_size)
+            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, self.counterVal * self.batch_size)
             
             # Updateing the counter
-            counter += 1
+            self.counterVal += 1
             
             # Executing the sql
             cursor.execute(sql)
@@ -156,20 +153,20 @@ class DataGenerator:
                 No arguments
         """
         
+        # Counter for tracking the index
+#        counter = 0
+        
         while True:
             # Initializng a SQLite database connection
             # TODO: Need to find a better way to find something
             connection = sqlite3.connect(self.database_path + '/sequence_test.db')
             cursor = connection.cursor()
             
-            # Counter for tracking the index
-            counter = 0
-            
             # SQL query
-            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, counter * self.batch_size)
+            sql = "SELECT * FROM reviews LIMIT {} OFFSET {};".format(self.batch_size, self.counterTest * self.batch_size)
             
             # Updateing the counter
-            counter += 1
+            self.counterTest += 1
             
             # Executing the sql
             cursor.execute(sql)
@@ -190,3 +187,6 @@ class DataGenerator:
                 nxt_arr.append(ord(nxt))
             
             yield self.ont_hot(seq_arr, nxt_arr)
+#            
+gen = DataGenerator('dataset')
+x, y = next(gen.testGenerator())
