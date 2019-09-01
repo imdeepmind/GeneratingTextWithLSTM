@@ -10,7 +10,7 @@ from generator import DataGenerator
 from callback import CustomCallback
 
 # Importing constants
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS, DEMO_REVIEW
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS
 
 # Creating weights folder if not exists
 if not os.path.exists(WEIGHT_FOLDER):

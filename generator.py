@@ -59,8 +59,14 @@ class DataGenerator:
         # Iterating through the seq and nxt
         for i, sentence in enumerate(seq):
             for t, char in enumerate(sentence):
+                if char < 0 or char > 128:
+                  char  = 97
                 x[i, t, char] = 1
-            y[i, nxt[i]] = 1
+                
+            if nxt[i] < 0 or nxt[i] > 128:
+              y[i, 97] = 1
+            else:
+              y[i, nxt[i]] = 1
         
         return x, y
     
@@ -187,6 +193,3 @@ class DataGenerator:
                 nxt_arr.append(ord(nxt))
             
             yield self.ont_hot(seq_arr, nxt_arr)
-#            
-gen = DataGenerator('dataset')
-x, y = next(gen.testGenerator())
