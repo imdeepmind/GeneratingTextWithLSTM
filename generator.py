@@ -59,6 +59,8 @@ class DataGenerator:
         # Iterating through the seq and nxt
         for i, sentence in enumerate(seq):
             for t, char in enumerate(sentence):
+                # In the dataset, sometimes there are some characters with ASCII value > 128
+                # For those cases, im setting the value to 97 (a)
                 if char < 0 or char > 128:
                   char  = 97
                 x[i, t, char] = 1

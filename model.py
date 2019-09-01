@@ -10,9 +10,9 @@ from generator import DataGenerator
 from callback import CustomCallback
 
 # Importing constants
-from constants import DATABASE, BATCH_SIZE, MAX_LENGTH, NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS
+from constants import DATABASE, BATCH_SIZE, MAX_LENGTH,  NO_ROWS_TRAIN, NO_ROWS_VAL, GPU, WEIGHT_FOLDER, EPOCHS, OUTPUT_CLASSES
 
-# Creating weights folder if not exists
+# Creating weights folder if it isn't exists
 if not os.path.exists(WEIGHT_FOLDER):
     os.makedirs(WEIGHT_FOLDER)
 
@@ -28,12 +28,12 @@ model = Sequential()
 
 # If GPU then using CuDNNLSTM else using LSTM
 if GPU:
-    model.add(CuDNNLSTM(128, input_shape=(MAX_LENGTH, 128)))
+    model.add(CuDNNLSTM(128, input_shape=(MAX_LENGTH, OUTPUT_CLASSES)))
 else:
-    model.add(LSTM(128, input_shape=(MAX_LENGTH, 128)))
+    model.add(LSTM(128, input_shape=(MAX_LENGTH, OUTPUT_CLASSES)))
 
 # Output layer
-model.add(Dense(128, activation='softmax'))
+model.add(Dense(OUTPUT_CLASSES, activation='softmax'))
 
 # Compiling the model and initializng optimizer
 optimizer = optimizers.RMSprop(lr=0.01)
@@ -59,4 +59,5 @@ model.fit_generator(trainGenerator,
                     validation_steps=NO_ROWS_VAL // BATCH_SIZE,
                     callbacks=[monitor, checkpoint, predictChars])
 
+# Saving the model
 model.save("{}/model.best.h5".format(WEIGHT_FOLDER))
