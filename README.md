@@ -1,10 +1,40 @@
-# FakeReview
+# Generating Text with LSTM Recurrent Neural Networks
 
-A LSTM RNN model that generates fake reviews. It uses a combination of Embedding layer and LSTM layer.
+The aim of this project is to generate text using LSTM Recurrent Neural Networks. LSTM Recurrent Neural Networks are powerful Deep Learning models that are used for learning sequenced data. Here a LSTM model is trained on 200 million samples, and the idea is that after training on 200 million samples, it should be able to generate text. 
 
-The preprocessing code is present in `preprocessing.py` file. 
+## Table of contents:
+- [Introduction](#introduction)
+- [Dataset](#dataset)
+- [Model](#model)
+- [Dependencies](#dependencies)
+- [File Structure](#file-structure)
+- [Future Improvements](#future-improvements)
+- [Acknowledgments](#acknowledgments)
 
-The model is present in `model.py`.
+## Introduction
 
-The predict script is present in `predict.py`.
+TODO
 
+
+## Dataset
+
+TODO
+
+## Model
+
+TODO
+
+## Dependencies
+
+TODO
+
+## File Structure
+
+TODO
+
+## Future Improvements
+
+TODO
+
+## Acknowledgments
+- [Amazon Review Dataset](https://s3.amazonaws.com/amazon-reviews-pds/readme.html)
