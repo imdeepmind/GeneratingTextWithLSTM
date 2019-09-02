@@ -7,6 +7,15 @@ from constants import DEMO_REVIEW, PREDICT_CHARS, MAX_LENGTH
 
 # Class CustomCallback 
 class CustomCallback(keras.callbacks.Callback):
+    # This method intriduces some randomness in the prediction
+    def sample(self, preds, temperature=1.0):
+        preds = np.asarray(preds).astype('float64')
+        preds = np.log(preds) / temperature
+        exp_preds = np.exp(preds)
+        preds = exp_preds / np.sum(exp_preds)
+        probas = np.random.multinomial(1, preds, 1)
+        return np.argmax(probas)
+    
     # This method is used to one hot all inputs
     def one_hot(self, seq):
         # Initializng a zero matrxi
@@ -32,10 +41,13 @@ class CustomCallback(keras.callbacks.Callback):
             x = self.one_hot(review[k: k + MAX_LENGTH])
             
             # Predicting using the model
-            temp = self.model.predict_classes(x)
+            temp = self.model.predict(x)
+            
+            # Calling the sample method
+            temp = self.sample(temp[0])
             
             # Appending the predicted charcter
-            review.append(temp[0])
+            review.append(temp)
         
         # Printing some info and predicted text
         print('Currently at epoch {}'.format(epoch))
