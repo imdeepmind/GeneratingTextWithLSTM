@@ -12,9 +12,9 @@ class DataGenerator:
     counterTrain = 0
     counterVal = 0
     counterTest = 0
-    one_hot_model=False
+    one_hot_mode=False
     
-    def __init__(self, database_path, batch_size=32, maxlen=40, one_hot_model=False):
+    def __init__(self, database_path, batch_size=32, maxlen=40, one_hot_mode=False):
         """
             Constructor method for the DataGenerator class
             
@@ -28,7 +28,7 @@ class DataGenerator:
         """
         
         # Setting the One Hot Mode
-        self.one_hot_model = one_hot_model
+        self.one_hot_mode = one_hot_mode
         
         # If there is a batch size provided, then setting it, else using the default
         if batch_size > 0:
@@ -57,7 +57,7 @@ class DataGenerator:
         """
         
         # Initializng numpy arrays
-        if self.one_hot_model:
+        if self.one_hot_mode:
             x = np.zeros((self.batch_size, self.maxlen, 128), dtype=np.bool)
         y = np.zeros((self.batch_size, 128), dtype=np.bool)
         
