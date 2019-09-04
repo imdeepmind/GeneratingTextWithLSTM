@@ -12,8 +12,9 @@ class DataGenerator:
     counterTrain = 0
     counterVal = 0
     counterTest = 0
+    one_hot_model=False
     
-    def __init__(self, database_path, batch_size=32, maxlen=40):
+    def __init__(self, database_path, batch_size=32, maxlen=40, one_hot_model=False):
         """
             Constructor method for the DataGenerator class
             
@@ -25,6 +26,9 @@ class DataGenerator:
                 maxlen: Integer
                     Max length of each sequence, Default is 40
         """
+        
+        # Setting the One Hot Mode
+        self.one_hot_model = one_hot_model
         
         # If there is a batch size provided, then setting it, else using the default
         if batch_size > 0:
@@ -53,24 +57,26 @@ class DataGenerator:
         """
         
         # Initializng numpy arrays
-        x = np.zeros((self.batch_size, self.maxlen, 128), dtype=np.bool)
+        if self.one_hot_model:
+            x = np.zeros((self.batch_size, self.maxlen, 128), dtype=np.bool)
         y = np.zeros((self.batch_size, 128), dtype=np.bool)
         
         # Iterating through the seq and nxt
         for i, sentence in enumerate(seq):
             for t, char in enumerate(sentence):
-                # In the dataset, sometimes there are some characters with ASCII value > 128
-                # For those cases, im setting the value to 97 (a)
-                if char < 0 or char > 128:
-                  char  = 97
-                x[i, t, char] = 1
-                
-            if nxt[i] < 0 or nxt[i] > 128:
-              y[i, 97] = 1
-            else:
-              y[i, nxt[i]] = 1
+                if self.one_hot_mode:
+                    if char < 0 or char > 128:
+                      char  = 97
+                    x[i, t, char] = 1
+                if nxt[i] < 0 or nxt[i] > 128:
+                  y[i, 97] = 1
+                else:
+                  y[i, nxt[i]] = 1
         
-        return x, y
+        if self.one_hot_mode:
+            return x, y
+        else:
+            return np.array(seq), y
     
     
     def trainGenerator(self):
@@ -83,7 +89,7 @@ class DataGenerator:
         
         while True:
             # Initializng a SQLite database connection
-            # TODO: Need to find a better way to find something
+            # TODO: Need to find a better way to connect with db
             connection = sqlite3.connect(self.database_path + '/sequence_train.db')
             cursor = connection.cursor()
             
@@ -123,7 +129,7 @@ class DataGenerator:
         
         while True:
             # Initializng a SQLite database connection
-            # TODO: Need to find a better way to find something
+            # TODO: Need to find a better way to connect with db
             connection = sqlite3.connect(self.database_path + '/sequence_val.db')
             cursor = connection.cursor()
             
@@ -166,7 +172,7 @@ class DataGenerator:
         
         while True:
             # Initializng a SQLite database connection
-            # TODO: Need to find a better way to find something
+            # TODO: Need to find a better way to connect with db
             connection = sqlite3.connect(self.database_path + '/sequence_test.db')
             cursor = connection.cursor()
             
