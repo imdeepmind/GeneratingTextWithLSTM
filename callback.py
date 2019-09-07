@@ -16,19 +16,6 @@ class CustomCallback(keras.callbacks.Callback):
         probas = np.random.multinomial(1, preds, 1)
         return np.argmax(probas)
     
-    # This method is used to one hot all inputs
-    def one_hot(self, seq):
-        # Initializng a zero matrxi
-        x = np.zeros((1, MAX_LENGTH, 128), dtype=np.bool)
-        
-        # Iterating through the seq to generate one hot
-        for i, sentence in enumerate([seq]):
-            for t, char in enumerate(sentence):
-                x[i, t, char] = 1
-        
-        # Returning the x
-        return x
-    
     # This method runs after each epoch
     def on_epoch_end(self, epoch, logs={}):
         # Printing some info and predicted text
@@ -42,11 +29,8 @@ class CustomCallback(keras.callbacks.Callback):
             
             # Predicting the next characters for PREDICT_CHARS times
             for k in range(PREDICT_CHARS):  
-                # Here im selecting the first 40 characters and using the one hot method to encode the data
-                x = self.one_hot(review[k: k + MAX_LENGTH])
-
                 # Predicting using the model
-                temp = self.model.predict(x)
+                temp = self.model.predict(np.array([review[k: k + MAX_LENGTH]]))
 
                 # Calling the sample method
                 temp = self.sample(temp[0], temperature)

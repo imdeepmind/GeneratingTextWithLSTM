@@ -61,7 +61,7 @@ model.fit_generator(trainGenerator,
                     steps_per_epoch=NO_ROWS_TRAIN // BATCH_SIZE,
                     validation_data=valGenerator,
                     validation_steps=NO_ROWS_VAL // BATCH_SIZE,
-                    callbacks=[monitor, checkpoint])
+                    callbacks=[monitor, checkpoint, predictChars])
 
 # Saving the model
 model.save("{}/model.best.h5".format(WEIGHT_FOLDER))
