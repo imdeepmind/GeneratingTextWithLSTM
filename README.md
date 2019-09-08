@@ -8,6 +8,7 @@ The aim of this project is to generate text using LSTM Recurrent Neural Networks
 - [Introduction](#introduction)
 - [Dataset](#dataset)
 - [Model](#model)
+- [Sample Results](#sample-results)
 - [Dependencies](#dependencies)
 - [File Structure](#file-structure)
 - [Future Improvements](#future-improvements)
@@ -15,7 +16,9 @@ The aim of this project is to generate text using LSTM Recurrent Neural Networks
 
 ## Introduction
 
-Recurrent Neural Networks are great in learning sequenced data. With enough data and computational data, they can learn very complex things. In this project LSTM Recurrent Neural Networks are used to generating text. 
+Recurrent Neural Networks are great in learning sequenced data. With enough data and computational power, they can learn very complex things. 
+
+In this project LSTM Recurrent Neural Networks are used to generating text. 
 
 To do that, the model is trained on the dataset of text characters. The dataset contains 40 character long sequences and the next character after the sequence. The model is here predicting the next character based on the 40 characters long sequence.  
 
@@ -31,6 +34,21 @@ After that, the dataset is preprocessed so that it can be used here in this proj
 To know more about the preprocessing step, please check this [GitHub repositiry](https://github.com/imdeepmind/AmazonReview-LanguageGenerationDataset). Also to download the dataset please click [here](https://www.kaggle.com/imdeepmind/language-generation-dataset-200m-samples/).
 
 ## Model
+
+Generating text is not an easy task for a computer, it is one of the hardest problem for computers. Here, in this project, to solve this problem, different types of Networks were used.
+
+The first layer in the model is a [Embedding](https://keras.io/layers/embeddings/) layer. In Keras, an Embedding layer is a work embedding layer (word2vec or glove). This layer is used to generate a vector representation of each sequence in our training sample. 
+
+The send layer is an LSTM layer. LSTM of Long Short Term Memory Recurrent Neural Network is a type of Neural Network, that is used for sequenced data. 
+
+> Here is a [link](https://colah.github.io/posts/2015-08-Understanding-LSTMs/) to a great blog on LSTM.  If you want to learn more about LSTM, please read it.
+
+The third layer is a Dense layer with ReLu activation method. In Keras, Dense is a normal densely connected Neural Network. And then, we have a Dropout layer, just to prevent overfitting.
+
+Finally, the output Softmax layer for predicting the outputs.
+
+
+## Sample Results
 
 TODO
 
@@ -53,7 +71,7 @@ Following are the files in the project.
 
 ## Future Improvements
 
-TODO
+Currently, the model is trained only on 30 million samples, not 200 million samples due to technical limitation. If the model is trained on 200 million samples, then the model can perform better.
 
 ## Acknowledgments
 - [Amazon Review Dataset](https://s3.amazonaws.com/amazon-reviews-pds/readme.html)
