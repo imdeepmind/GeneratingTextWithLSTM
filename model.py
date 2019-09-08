@@ -1,6 +1,6 @@
 # Importing dependencies
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, CuDNNLSTM
+from keras.layers import Dense, LSTM, CuDNNLSTM, Dropout
 from keras.layers.embeddings import Embedding
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras import optimizers
@@ -35,6 +35,12 @@ if GPU:
     model.add(CuDNNLSTM(128))
 else:
     model.add(LSTM(128))
+    
+# A Dense layer for the model
+model.add(Dense(256, activation='relu'))
+
+# A dropout layer for preventing overfittinh
+model.add(Dropout(0.5))
 
 # Output layer
 model.add(Dense(OUTPUT_CLASSES, activation='softmax'))
