@@ -4,6 +4,8 @@
 
 The aim of this project is to generate text using LSTM Recurrent Neural Networks. LSTM Recurrent Neural Networks are powerful Deep Learning models that are used for learning sequenced data. Here an LSTM model is trained on 200 million samples, and the idea is that after training on 200 million samples, it should be able to generate text. 
 
+> Note: Due to limited computational power, I haven't trained the model on those 200 million samples. Instead a i just trained it on 30 million samples..
+
 ## Table of contents:
 - [Introduction](#introduction)
 - [Dataset](#dataset)
